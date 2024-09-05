@@ -12,7 +12,7 @@ export default function ControlUI() {
                 <div className="relative min-w-fit">
                     <Select
                         className={clsx(
-                            'mt-3 block w-full appearance-none rounded-lg border-none bg-slate-100 py-1.5 px-3 text-sm/6 text-black',
+                            'mt-3 block w-full appearance-none rounded-lg border-none bg-white py-1.5 px-3 text-sm/6 text-black',
                             'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-black/25 ',
                             // Make the text of each option black on Windows
                             '*:text-black'
@@ -50,7 +50,7 @@ export default function ControlUI() {
             <div className='p-4'>
                 <button className='opacity-90 hover:opacity-100 mx-2 py-2 px-4 rounded-md bg-blue-600 text-white'>Undo</button>
                 <button className='opacity-90 hover:opacity-100 mx-2 py-2 px-4 rounded-md bg-green-500 text-white'>Redo</button>
-                <button className='mx-2 py-2 px-4 bg-gray-100 rounded-md outline outline-red-500 text-red-500 hover:bg-red-500 hover:text-white transition duration-200'>Clear</button>
+                <button className='mx-2 py-2 px-4 rounded-md outline outline-red-500 text-red-500 hover:bg-red-500 hover:text-white transition duration-200'>Clear</button>
             </div>
         </div>
     )
