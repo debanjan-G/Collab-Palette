@@ -18,9 +18,9 @@ const CreateRoomForm = () => {
                         className=
                         'bg-slate-200 outline outline-1 outline-slate-500 outline-offset-1 mt-3 block w-full rounded-sm border-none bg-white/5 py-1.5 px-3 text-sm/6 text-black focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-blue-500' autoComplete='off' disabled
                     />
-                    <button className=' bg-slate-950  text-white hover:bg-slate-700 transition duration-200 mt-3 block rounded-sm border-none bg-white/5 py-1.5 px-3 text-sm/6 '>Generate</button>
+                    <button className='bg-slate-900   text-white hover:bg-slate-700 transition duration-200 mt-3 block rounded-sm border-none bg-white/5 py-1.5 px-3 text-sm/6 '>Generate</button>
 
-                    <button className='bg-blue-700  text-white hover:bg-blue-600 transition duration-200  mt-3 block rounded-sm border-none bg-white/5 py-1.5 px-3 text-sm/6 '>Copy</button>
+                    <button className='bg-green-700  text-white hover:bg-blue-600 transition duration-200  mt-3 block rounded-sm border-none bg-white/5 py-1.5 px-3 text-sm/6 '>Copy</button>
                 </div>
                 <button className='bg-blue-700 hover:bg-blue-500 transition duration-200 text-white px-4 py-2 rounded-md my-4 w-full mx-auto'>Create Room</button>
             </form>

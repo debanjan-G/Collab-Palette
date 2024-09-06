@@ -1,18 +1,37 @@
-import React from 'react'
-import ControlUI from './Control UI'
+
+import { useRef } from 'react';
+import { Layer, Stage } from 'react-konva';
 
 
-const Whiteboard = () => {
+const Whiteboard = ({ action }) => {
+
+    const stageRef = useRef();
+
+    const handlePointerDown = () => {
+
+    }
+    const handlePointerMove = () => {
+
+    }
+    const handlePointerUp = () => {
+
+    }
+
+
 
     return (
-        <div className=' bg-custom px-20'>
-            <div className='h-[80vh] w-full mx-auto bg-white shadow-md p-4 border border-slate-400 rounded-md'>
-                <div className='bg-slate-100 shadow-md w-full rounded-md p-2 mx-auto'>
-                    <ControlUI />
-                </div>
-            </div>
-        </div>
-    )
-}
+        // Canvas
+        <Stage
+            ref={stageRef}
+            className='h-[65vh] w-[65vw] mx-auto bg-white shadow-md p-4 border border-slate-400 rounded-md'
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+        >
+            <Layer></Layer>
+        </Stage>
 
-export default Whiteboard
+    );
+};
+
+export default Whiteboard;

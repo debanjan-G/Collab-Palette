@@ -2,7 +2,18 @@ import { Description, Field, Label, Select } from '@headlessui/react'
 import { FaCaretDown } from "react-icons/fa";
 import clsx from 'clsx'
 
-export default function ControlUI() {
+export default function ControlUI({ action, setAction, color, setColor }) {
+
+    const handleColorChange = (e) => {
+        console.log("CHANGING COLOR TO ", e.target.value);
+        setColor(e.target.value)
+    }
+
+    const handleToolChange = (e) => {
+        console.log("CHANGING Tool TO ", e.target.value);
+        setAction(e.target.value)
+    }
+
     return (
         <div className="flex justify-between gap-4 w-full px-4">
             <Field className='w-1/6'>
@@ -11,6 +22,8 @@ export default function ControlUI() {
                 </Label>
                 <div className="relative min-w-fit">
                     <Select
+                        value={action}
+                        onChange={handleToolChange}
                         className={clsx(
                             'mt-3 block w-full appearance-none rounded-lg border-none bg-white py-1.5 px-3 text-sm/6 text-black',
                             'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-black/25 ',
@@ -18,16 +31,10 @@ export default function ControlUI() {
                             '*:text-black'
                         )}
                     >
-                        <option value="active">
-                            Pencil
-                        </option>
-                        <option value="paused">
-                            Line
-
-                        </option>
-                        <option value="delayed">
-                            Rectangle
-                        </option>
+                        <option value="PENCIL">Pencil</option>
+                        <option value="LINE">Line</option>
+                        <option value="RECTANGLE">Rectangle</option>
+                        <option value="CIRCLE">Circle</option>
                         {/* <option value="canceled">Canceled</option> */}
                     </Select>
                     <FaCaretDown
@@ -42,7 +49,7 @@ export default function ControlUI() {
                     Color
                 </Label>
                 <div>
-                    <input type="color" name="" id="" className='my-3'
+                    <input value={color} onChange={handleColorChange} type="color" name="" id="" className='my-3'
                     />
                 </div>
             </Field>
