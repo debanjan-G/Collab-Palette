@@ -1,6 +1,6 @@
 export const ACTIONS = {
-  pencil: "PENCIL",
-  line: "LINE",
-  rectangle: "RECTANGLE",
-  circle: "CIRCLE",
+  PENCIL: "pencil",
+  LINE: "line",
+  RECTANGLE: "rectangle",
+  CIRCLE: "circle",
 };

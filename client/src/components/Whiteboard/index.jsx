@@ -1,20 +1,73 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 
 import { useRef } from 'react';
-import { Layer, Stage } from 'react-konva';
+import { Layer, Rect, Stage } from 'react-konva';
+import { ACTIONS } from '../../constants';
 
 
-const Whiteboard = ({ action }) => {
+const Whiteboard = ({ color, stageRef, action, rectangles, setRectangles, uuid, currentShapeID, isPainting }) => {
 
-    const stageRef = useRef();
+    console.log("CURRENT ACTION = ", action);
+    console.log("CURRENT Color = ", color);
 
     const handlePointerDown = () => {
 
+        // if (!isPainting.current) return;
+
+        const stage = stageRef.current;
+        const { x, y } = stage.getPointerPosition()
+        const id = uuid();
+        currentShapeID.current = id;
+        isPainting.current = true;
+
+        switch (action) {
+            case ACTIONS.RECTANGLE:
+                setRectangles((rectangles) => [
+                    ...rectangles,
+                    {
+                        id,
+                        x,
+                        y,
+                        height: 20,
+                        width: 20,
+                        fillColor: color,
+                    },
+                ]);
+                break;
+
+            default:
+                break;
+        }
     }
     const handlePointerMove = () => {
+        if (!isPainting.current) return;
 
+        const stage = stageRef.current;
+        const { x, y } = stage.getPointerPosition()
+
+        switch (action) {
+            case ACTIONS.RECTANGLE:
+                setRectangles((rectangles) =>
+                    rectangles.map((rectangle) => {
+                        if (rectangle.id === currentShapeID.current) {
+                            return {
+                                ...rectangle,
+                                width: x - rectangle.x,
+                                height: y - rectangle.y,
+                            };
+                        }
+                        return rectangle;
+                    })
+                );
+                break;
+
+            default:
+                break;
+        }
     }
     const handlePointerUp = () => {
-
+        isPainting.current = false;
     }
 
 
@@ -23,12 +76,26 @@ const Whiteboard = ({ action }) => {
         // Canvas
         <Stage
             ref={stageRef}
-            className='h-[65vh] w-[65vw] mx-auto bg-white shadow-md p-4 border border-slate-400 rounded-md'
+            width={800}
+            height={800}
+            className=' mx-auto bg-white shadow-md p-4 border border-slate-400 rounded-md'
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
         >
-            <Layer></Layer>
+            <Layer>
+
+                {rectangles.map((rectangle) =>
+                    <Rect
+                        key={rectangle.id}
+                        height={rectangle.height}
+                        width={rectangle.width}
+                        x={rectangle.x}
+                        y={rectangle.y}
+                        fill={rectangle.fillColor} />
+                )}
+
+            </Layer>
         </Stage>
 
     );
