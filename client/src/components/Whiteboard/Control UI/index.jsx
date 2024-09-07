@@ -5,13 +5,29 @@ import { GrClear } from "react-icons/gr";
 import { FaCaretDown } from "react-icons/fa";
 import clsx from 'clsx'
 import { ACTIONS } from '../../../constants';
+import { IoColorFill } from "react-icons/io5";
+import { MdBorderColor } from "react-icons/md";
 
-export default function ControlUI({ action, setAction, color, setColor, stageRef }) {
+export default function ControlUI({ action, setAction, strokeColor, setStrokeColor, fillColor, setFillColor, setColor, stageRef }) {
+
+
+    console.log("Stroke COLOR = ", strokeColor);
+    console.log("Fill COLOR = ", fillColor);
 
     const handleColorChange = (e) => {
         console.log("CHANGING COLOR TO ", e.target.value);
         setColor(e.target.value)
     }
+    const handleFillColorChange = (e) => {
+        console.log("CHANGING COLOR TO ", e.target.value);
+        setFillColor(e.target.value)
+    }
+    const handleStrokeColorChange = (e) => {
+        console.log("CHANGING COLOR TO ", e.target.value);
+        setStrokeColor(e.target.value)
+    }
+
+
 
     const handleToolChange = (e) => {
         console.log("CHANGING Tool TO ", e.target.value);
@@ -57,7 +73,15 @@ export default function ControlUI({ action, setAction, color, setColor, stageRef
 
             <Field>
                 <div>
-                    <input value={color} onChange={handleColorChange} type="color" name="" id="" className='my-3'
+                    <MdBorderColor className='size-8 text-black' />
+                    <input value={strokeColor} onChange={handleStrokeColorChange} type="color" name="" id="" className='my-3'
+                    />
+                </div>
+            </Field>
+            <Field>
+                <div>
+                    <IoColorFill className='size-8 text-green-500' />
+                    <input value={fillColor} onChange={handleFillColorChange} type="color" name="" id="" className='my-3'
                     />
                 </div>
             </Field>

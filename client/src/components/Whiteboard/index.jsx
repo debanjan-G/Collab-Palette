@@ -6,10 +6,12 @@ import { Layer, Rect, Stage } from 'react-konva';
 import { ACTIONS } from '../../constants';
 
 
-const Whiteboard = ({ color, stageRef, action, rectangles, setRectangles, uuid, currentShapeID, isPainting }) => {
+const Whiteboard = ({ color, stageRef, action, rectangles, setRectangles, uuid, currentShapeID, isPainting, strokeColor, fillColor }) => {
 
-    console.log("CURRENT ACTION = ", action);
+    // console.log("CURRENT ACTION = ", action);
     console.log("CURRENT Color = ", color);
+    console.log("CURRENT Stroke Color = ", strokeColor);
+    console.log("CURRENT Fill Color = ", fillColor);
 
     const handlePointerDown = () => {
 
@@ -31,7 +33,8 @@ const Whiteboard = ({ color, stageRef, action, rectangles, setRectangles, uuid, 
                         y,
                         height: 20,
                         width: 20,
-                        fillColor: color,
+                        fillColor,
+                        strokeColor
                     },
                 ]);
                 break;
@@ -92,7 +95,9 @@ const Whiteboard = ({ color, stageRef, action, rectangles, setRectangles, uuid, 
                         width={rectangle.width}
                         x={rectangle.x}
                         y={rectangle.y}
-                        fill={rectangle.fillColor} />
+                        fill={rectangle.fillColor}
+                        stroke={rectangle.strokeColor}
+                    />
                 )}
 
             </Layer>
