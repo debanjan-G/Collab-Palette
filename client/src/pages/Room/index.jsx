@@ -18,6 +18,9 @@ const RoomPage = () => {
   const [strokeColor, setStrokeColor] = useState("#000000")
   const [fillColor, setFillColor] = useState("#FFFFFF")
 
+  // For Pencil/Eraser Functionality
+  const [tool, setTool] = useState("pencil")
+
 
   // SHAPES
   const [rectangles, setRectangles] = useState([])
@@ -41,6 +44,7 @@ const RoomPage = () => {
         setRectangles={setRectangles}
         setCircles={setCircles}
         setLines={setLines}
+        setTool={setTool}
       />
 
       <Whiteboard
@@ -58,6 +62,7 @@ const RoomPage = () => {
         color={color}
         strokeColor={strokeColor}
         fillColor={fillColor}
+        tool={tool}
       />
 
     </div>

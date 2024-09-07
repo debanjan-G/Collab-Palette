@@ -7,9 +7,10 @@ import clsx from 'clsx'
 import { ACTIONS } from '../../../constants';
 import { IoColorFill } from "react-icons/io5";
 import { MdBorderColor } from "react-icons/md";
-import { TbTools } from "react-icons/tb";
+import { IoIosDownload } from "react-icons/io";
+import { CiEraser } from "react-icons/ci";
 
-export default function ControlUI({ action, setAction, strokeColor, setStrokeColor, fillColor, setFillColor, stageRef, setRectangles, setCircles, setLines }) {
+export default function ControlUI({ action, setAction, strokeColor, setStrokeColor, fillColor, setFillColor, stageRef, setRectangles, setCircles, setLines, setTool }) {
 
 
     console.log("Stroke COLOR = ", strokeColor);
@@ -25,9 +26,11 @@ export default function ControlUI({ action, setAction, strokeColor, setStrokeCol
     }
 
 
-
     const handleToolChange = (e) => {
         console.log("CHANGING Tool TO ", e.target.value);
+        if (e.target.value === 'pencil') {
+            setTool('pencil')
+        }
         setAction(e.target.value)
     }
 
@@ -45,6 +48,10 @@ export default function ControlUI({ action, setAction, strokeColor, setStrokeCol
         setRectangles([])
         setCircles([])
         setLines([])
+    }
+
+    const setToolToEraser = () => {
+        setTool("eraser")
     }
 
     return (
@@ -94,8 +101,12 @@ export default function ControlUI({ action, setAction, strokeColor, setStrokeCol
                 </Field>
 
                 <div className='p-4'>
+                    <CiEraser onClick={setToolToEraser} className='size-10 inline hover:cursor-pointer mx-2' />
                     <GrClear onClick={handleClearCanvas} className='size-10 inline hover:cursor-pointer text-red-500 mx-2' />
-                    <BiExport className='size-10 inline hover:cursor-pointer mx-4' onClick={handleExportImage} />
+                    <IoIosDownload className='size-10 inline hover:cursor-pointer mx-4' onClick={handleExportImage} />
+
+
+
 
                 </div>
             </div>

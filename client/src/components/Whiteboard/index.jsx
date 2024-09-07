@@ -6,14 +6,11 @@ import { Layer, Rect, Circle, Stage, Text, Line } from 'react-konva';
 import { ACTIONS } from '../../constants';
 
 
-const Whiteboard = ({ stageRef, action, circles, setCircles, rectangles, setRectangles, lines, setLines, uuid, currentShapeID, isPainting, strokeColor, fillColor }) => {
+const Whiteboard = ({ tool, setTool, stageRef, action, circles, setCircles, rectangles, setRectangles, lines, setLines, uuid, currentShapeID, isPainting, strokeColor, fillColor }) => {
 
-    const [tool, setTool] = useState("pencil")
 
-    console.log("SELECTED TOOL = ", action);
-    console.log("CIRCLES = ", circles);
-    console.log("RECTANGLES = ", rectangles);
-    console.log("LINES = ", lines);
+
+    console.log("CURRENT TOOL = ", tool);
 
 
 
@@ -58,7 +55,6 @@ const Whiteboard = ({ stageRef, action, circles, setCircles, rectangles, setRect
                 break;
 
             case ACTIONS.PENCIL:
-
                 setLines([...lines,
                 {
                     id,
