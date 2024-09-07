@@ -7,10 +7,10 @@ import { v4 as uuidv4 } from "uuid"
 
 const RoomPage = () => {
   const { roomID } = useParams();
-  const stageRef = useRef();
+  const stageRef = useRef(null);
 
-  const isPainting = useRef();
-  const currentShapeID = useRef()
+  const isPainting = useRef(false);
+  const currentShapeID = useRef(null)
 
 
   const [action, setAction] = useState(ACTIONS.PENCIL)
@@ -18,7 +18,10 @@ const RoomPage = () => {
   const [strokeColor, setStrokeColor] = useState("#000000")
   const [fillColor, setFillColor] = useState("#FFFFFF")
 
+
+  // SHAPES
   const [rectangles, setRectangles] = useState([])
+  const [circles, setCircles] = useState([])
 
 
   return (
@@ -31,6 +34,8 @@ const RoomPage = () => {
       <Whiteboard
         action={action}
         stageRef={stageRef}
+        setCircles={setCircles}
+        circles={circles}
         setRectangles={setRectangles}
         rectangles={rectangles}
         uuid={uuidv4}

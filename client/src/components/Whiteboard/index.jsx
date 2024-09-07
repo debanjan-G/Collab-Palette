@@ -2,23 +2,23 @@
 /* eslint-disable no-unused-vars */
 
 import { useRef } from 'react';
-import { Layer, Rect, Stage } from 'react-konva';
+import { Layer, Rect, Circle, Stage } from 'react-konva';
 import { ACTIONS } from '../../constants';
 
 
-const Whiteboard = ({ color, stageRef, action, rectangles, setRectangles, uuid, currentShapeID, isPainting, strokeColor, fillColor }) => {
+const Whiteboard = ({ stageRef, action, circles, setCircles, rectangles, setRectangles, uuid, currentShapeID, isPainting, strokeColor, fillColor }) => {
 
-    // console.log("CURRENT ACTION = ", action);
-    console.log("CURRENT Color = ", color);
-    console.log("CURRENT Stroke Color = ", strokeColor);
-    console.log("CURRENT Fill Color = ", fillColor);
+    console.log("SELECTED TOOL = ", action);
+    console.log("CIRCLES = ", circles);
+    console.log("RECTANGLES = ", rectangles);
+
+
 
     const handlePointerDown = () => {
 
-        // if (!isPainting.current) return;
-
         const stage = stageRef.current;
         const { x, y } = stage.getPointerPosition()
+
         const id = uuid();
         currentShapeID.current = id;
         isPainting.current = true;
@@ -37,6 +37,20 @@ const Whiteboard = ({ color, stageRef, action, rectangles, setRectangles, uuid, 
                         strokeColor
                     },
                 ]);
+                break;
+
+            case ACTIONS.CIRCLE:
+                setCircles((circles) => [
+                    ...circles,
+                    {
+                        id,
+                        x,
+                        y,
+                        radius: 10,
+                        fillColor,
+                        strokeColor
+                    }
+                ])
                 break;
 
             default:
@@ -65,6 +79,19 @@ const Whiteboard = ({ color, stageRef, action, rectangles, setRectangles, uuid, 
                 );
                 break;
 
+            case ACTIONS.CIRCLE:
+                setCircles((circles) =>
+                    circles.map((circle) => {
+                        if (circle.id === currentShapeID.current) {
+                            return {
+                                ...circle,
+                                radius: Math.sqrt((y - circle.y) ** 2 + (x - circle.x) ** 2)
+                            };
+                        }
+                        return circle;
+                    }))
+                break;
+
             default:
                 break;
         }
@@ -79,9 +106,9 @@ const Whiteboard = ({ color, stageRef, action, rectangles, setRectangles, uuid, 
         // Canvas
         <Stage
             ref={stageRef}
-            width={800}
-            height={800}
-            className=' mx-auto bg-white shadow-md p-4 border border-slate-400 rounded-md'
+            width={1200}
+            height={400}
+            className=' mx-auto bg-white shadow-md border border-slate-400 rounded-md'
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
@@ -97,6 +124,17 @@ const Whiteboard = ({ color, stageRef, action, rectangles, setRectangles, uuid, 
                         y={rectangle.y}
                         fill={rectangle.fillColor}
                         stroke={rectangle.strokeColor}
+                    />
+                )}
+
+                {circles.map((circle) =>
+                    <Circle
+                        key={circle.id}
+                        x={circle.x}
+                        y={circle.y}
+                        radius={circle.radius}
+                        fill={circle.fillColor}
+                        stroke={circle.strokeColor}
                     />
                 )}
 
