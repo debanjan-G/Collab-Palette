@@ -11,15 +11,14 @@ const JoinRoomForm = () => {
                     <Input
                         placeholder='Name'
                         className=
-                        'outline outline-1 outline-slate-500 outline-offset-1 mt-3 block w-full rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-black focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-blue-500' autoComplete='off'
+                        'outline outline-1 outline-slate-500 outline-offset-1 mt-3 block w-full rounded-sm border-none bg-white/5 py-1.5 px-3 text-sm/6 text-black focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-blue-500' autoComplete='off'
                     />
                 </Field>
                 <Field className='my-4'>
-                    {/* <Label className="text-sm/6 font-medium text-black">Room ID</Label> */}
                     <Input
                         placeholder='Room ID'
                         className=
-                        ' outline outline-1 outline-slate-500 outline-offset-1 mt-3 block w-full rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-black focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-blue-500' autoComplete='off'
+                        ' outline outline-1 outline-slate-500 outline-offset-1 mt-3 block w-full rounded-sm border-none bg-white/5 py-1.5 px-3 text-sm/6 text-black focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-blue-500' autoComplete='off'
                     />
                 </Field>
 
