@@ -26,10 +26,20 @@ const RoomPage = () => {
 
   return (
     <div className='flex flex-col justify-center p-10  bg-custom px-20' >
-      <p className='text-green-600 text-center text-4xl font-medium my-4'> Active Users - 0</p>
-      <div className='bg-slate-100 shadow-md w-full rounded-md p-2 mx-auto mb-5'>
-        <ControlUI setAction={setAction} action={action} strokeColor={strokeColor} setStrokeColor={setStrokeColor} fillColor={fillColor} setFillColor={setFillColor} stageRef={stageRef} />
-      </div>
+      <p className='text-green-600 text-center text-4xl font-medium my-4'>
+        Active Users - 0</p>
+
+      <ControlUI
+        setAction={setAction}
+        action={action}
+        strokeColor={strokeColor}
+        setStrokeColor={setStrokeColor}
+        fillColor={fillColor}
+        setFillColor={setFillColor}
+        stageRef={stageRef}
+        setRectangles={setRectangles}
+        setCircles={setCircles}
+      />
 
       <Whiteboard
         action={action}
