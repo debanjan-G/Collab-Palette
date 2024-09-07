@@ -1,16 +1,20 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
-import { useRef } from 'react';
-import { Layer, Rect, Circle, Stage } from 'react-konva';
+import { useRef, useState } from 'react';
+import { Layer, Rect, Circle, Stage, Text, Line } from 'react-konva';
 import { ACTIONS } from '../../constants';
 
 
-const Whiteboard = ({ stageRef, action, circles, setCircles, rectangles, setRectangles, uuid, currentShapeID, isPainting, strokeColor, fillColor }) => {
+const Whiteboard = ({ stageRef, action, circles, setCircles, rectangles, setRectangles, lines, setLines, uuid, currentShapeID, isPainting, strokeColor, fillColor }) => {
+
+    const [tool, setTool] = useState("pencil")
 
     console.log("SELECTED TOOL = ", action);
     console.log("CIRCLES = ", circles);
     console.log("RECTANGLES = ", rectangles);
+    console.log("LINES = ", lines);
+
 
 
 
@@ -53,6 +57,17 @@ const Whiteboard = ({ stageRef, action, circles, setCircles, rectangles, setRect
                 ])
                 break;
 
+            case ACTIONS.PENCIL:
+
+                setLines([...lines,
+                {
+                    id,
+                    tool,
+                    strokeColor,
+                    points: [x, y]
+                }]);
+                break;
+
             default:
                 break;
         }
@@ -62,6 +77,7 @@ const Whiteboard = ({ stageRef, action, circles, setCircles, rectangles, setRect
 
         const stage = stageRef.current;
         const { x, y } = stage.getPointerPosition()
+        const lastLine = lines[lines.length - 1];
 
         switch (action) {
             case ACTIONS.RECTANGLE:
@@ -90,6 +106,15 @@ const Whiteboard = ({ stageRef, action, circles, setCircles, rectangles, setRect
                         }
                         return circle;
                     }))
+                break;
+
+            case ACTIONS.PENCIL:
+
+                // add point
+                lastLine.points = lastLine.points.concat([x, y]);
+                // replace last
+                lines.splice(lines.length - 1, 1, lastLine);
+                setLines(lines.concat());
                 break;
 
             default:
@@ -135,6 +160,20 @@ const Whiteboard = ({ stageRef, action, circles, setCircles, rectangles, setRect
                         radius={circle.radius}
                         fill={circle.fillColor}
                         stroke={circle.strokeColor}
+                    />
+                )}
+
+                {lines.map((line) =>
+                    <Line
+                        key={line.id}
+                        stroke={line.strokeColor}
+                        points={line.points}
+                        strokeWidth={5}
+                        lineCap="round"
+                        lineJoin="round"
+                        globalCompositeOperation={
+                            line.tool === 'eraser' ? 'destination-out' : 'source-over'
+                        }
                     />
                 )}
 

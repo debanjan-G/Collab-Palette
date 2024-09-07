@@ -22,6 +22,7 @@ const RoomPage = () => {
   // SHAPES
   const [rectangles, setRectangles] = useState([])
   const [circles, setCircles] = useState([])
+  const [lines, setLines] = useState([])
 
 
   return (
@@ -39,6 +40,7 @@ const RoomPage = () => {
         stageRef={stageRef}
         setRectangles={setRectangles}
         setCircles={setCircles}
+        setLines={setLines}
       />
 
       <Whiteboard
@@ -48,6 +50,8 @@ const RoomPage = () => {
         circles={circles}
         setRectangles={setRectangles}
         rectangles={rectangles}
+        lines={lines}
+        setLines={setLines}
         uuid={uuidv4}
         currentShapeID={currentShapeID}
         isPainting={isPainting}

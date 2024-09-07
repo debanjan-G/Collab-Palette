@@ -9,7 +9,7 @@ import { IoColorFill } from "react-icons/io5";
 import { MdBorderColor } from "react-icons/md";
 import { TbTools } from "react-icons/tb";
 
-export default function ControlUI({ action, setAction, strokeColor, setStrokeColor, fillColor, setFillColor, stageRef, setRectangles, setCircles }) {
+export default function ControlUI({ action, setAction, strokeColor, setStrokeColor, fillColor, setFillColor, stageRef, setRectangles, setCircles, setLines }) {
 
 
     console.log("Stroke COLOR = ", strokeColor);
@@ -44,6 +44,7 @@ export default function ControlUI({ action, setAction, strokeColor, setStrokeCol
     const handleClearCanvas = () => {
         setRectangles([])
         setCircles([])
+        setLines([])
     }
 
     return (
