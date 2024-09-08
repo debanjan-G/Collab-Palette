@@ -18,7 +18,7 @@ app.get("/", (req, res) => {
 
 io.on("connection", (socket) => {
   socket.on("userJoined", (data) => {
-    // console.log("DATA = ", data);
+    console.log("DATA = ", data);
     const { roomID, userID, name, host, presenter } = data;
     socket.join(roomID);
     socket.emit("userIsJoined", { success: true });
