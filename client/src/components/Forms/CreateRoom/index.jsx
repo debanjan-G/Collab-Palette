@@ -1,16 +1,20 @@
+/* eslint-disable react/prop-types */
 import { Field, Input } from '@headlessui/react'
 import { useState } from 'react';
 import { v4 as uuidv4 } from "uuid"
 import toast, { Toaster } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
-const CreateRoomForm = () => {
+const CreateRoomForm = ({ socket, setUserData }) => {
 
     const [roomCode, setRoomCode] = useState("")
+    const [name, setName] = useState("")
+    const navigate = useNavigate()
 
     const handleGenerateRoomCode = () => {
         console.log("Generating Room Code...");
         setRoomCode(uuidv4())
-        toast("Room Code generated ✅ ")
+        toast("Code generated ✅ ")
     }
 
     const handleCopyToClickboard = () => {
@@ -18,19 +22,43 @@ const CreateRoomForm = () => {
             return toast("⚠️ first generate a room code")
         }
         navigator.clipboard.writeText(roomCode)
-        toast("Room Code copied ✅ ")
+        toast("copied to clipboard ✅ ")
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log("Creating Room...");
+
+        const data = {
+            name,
+            roomID: roomCode,
+            userID: uuidv4(),
+            host: true,
+            presenter: true
+        }
+
+        setUserData(data); //saving the data as state
+        console.log(data);
+
+        socket.emit("userJoined", data)
+
+        navigate(`/${roomCode}/whiteboard`)
     }
 
     return (
         <div className="w-1/3 min-h-fit max-w-md p-8 shadow-lg bg-slate-50 outline outline-slate-200 flex flex-col justify-center">
             <Toaster />
             <h1 className='text-4xl font-bold text-center'>Create Room</h1>
-            <form className='h-full'>
+            <form className='h-full' onSubmit={handleSubmit}>
                 <Field className='my-4'>
                     <Input
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                         placeholder='Name'
                         className=
-                        'outline outline-1 outline-slate-500 outline-offset-1 mt-3 block w-full rounded-sm border-none bg-white/5 py-1.5 px-3 text-sm/6 text-black focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-blue-500' autoComplete='off'
+                        'outline outline-1 outline-slate-500 outline-offset-1 mt-3 block w-full rounded-sm border-none bg-white/5 py-1.5 px-3 text-sm/6 text-black focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-blue-500'
+                        autoComplete='off'
+                        required
                     />
                 </Field>
                 <div className='flex justify-center w-full'>
