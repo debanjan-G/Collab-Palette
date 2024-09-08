@@ -8,12 +8,8 @@ import { ACTIONS } from '../../constants';
 
 const Whiteboard = ({ tool, setTool, stageRef, action, circles, setCircles, rectangles, setRectangles, lines, setLines, uuid, currentShapeID, isPainting, strokeColor, fillColor }) => {
 
-
-
-    console.log("CURRENT TOOL = ", tool);
-
-
-
+    const shapeRefs = useRef({})
+    const [forceUpdate, setForceUpdate] = useState(0)
 
     const handlePointerDown = () => {
 
@@ -121,6 +117,14 @@ const Whiteboard = ({ tool, setTool, stageRef, action, circles, setCircles, rect
         isPainting.current = false;
     }
 
+    const handleShapeClick = (id) => {
+        // Get the ref of the shape and move it to the top
+        if (shapeRefs.current[id]) {
+            shapeRefs.current[id].moveToTop();
+            shapeRefs.current[id].getLayer().batchDraw(); // Redraw the layer to apply changes
+        }
+        setForceUpdate((prev) => prev + 1); // Force a re-render
+    };
 
 
     return (
@@ -138,6 +142,7 @@ const Whiteboard = ({ tool, setTool, stageRef, action, circles, setCircles, rect
 
                 {rectangles.map((rectangle) =>
                     <Rect
+                        ref={(node) => { shapeRefs.current[rectangle.id] = node; }} // Assign ref
                         key={rectangle.id}
                         height={rectangle.height}
                         width={rectangle.width}
@@ -145,17 +150,20 @@ const Whiteboard = ({ tool, setTool, stageRef, action, circles, setCircles, rect
                         y={rectangle.y}
                         fill={rectangle.fillColor}
                         stroke={rectangle.strokeColor}
+                        onClick={() => handleShapeClick(rectangle.id)}
                     />
                 )}
 
                 {circles.map((circle) =>
                     <Circle
+                        ref={(node) => { shapeRefs.current[circle.id] = node; }} // Assign ref
                         key={circle.id}
                         x={circle.x}
                         y={circle.y}
                         radius={circle.radius}
                         fill={circle.fillColor}
                         stroke={circle.strokeColor}
+                        onClick={() => handleShapeClick(circle.id)}
                     />
                 )}
 
@@ -164,12 +172,13 @@ const Whiteboard = ({ tool, setTool, stageRef, action, circles, setCircles, rect
                         key={line.id}
                         stroke={line.strokeColor}
                         points={line.points}
-                        strokeWidth={5}
+                        strokeWidth={line.tool === 'eraser' ? 20 : 5}
                         lineCap="round"
                         lineJoin="round"
                         globalCompositeOperation={
                             line.tool === 'eraser' ? 'destination-out' : 'source-over'
                         }
+
                     />
                 )}
 

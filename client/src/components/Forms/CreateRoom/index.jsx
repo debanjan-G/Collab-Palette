@@ -46,10 +46,10 @@ const CreateRoomForm = ({ socket, setUserData }) => {
     }
 
     return (
-        <div className="w-1/3 min-h-fit max-w-md p-8 shadow-lg bg-slate-50 outline outline-slate-200 flex flex-col justify-center">
+        <div className="w-1/3 h-96 min-h-fit max-w-md p-4 shadow-lg bg-slate-50 outline outline-slate-200 flex flex-col justify-center">
             <Toaster />
             <h1 className='text-4xl font-bold text-center'>Create Room</h1>
-            <form className='h-full' onSubmit={handleSubmit}>
+            <form className='px-4' onSubmit={handleSubmit}>
                 <Field className='my-4'>
                     <Input
                         value={name}

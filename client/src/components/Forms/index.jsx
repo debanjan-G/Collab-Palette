@@ -33,7 +33,7 @@ const Forms = () => {
         <div className="h-[85vh] flex justify-evenly items-center">
 
             <CreateRoomForm socket={socket} setUserData={setUserData} />
-            <JoinRoomForm socket={socket} />
+            <JoinRoomForm socket={socket} setUserData={setUserData} />
 
         </div>
     )

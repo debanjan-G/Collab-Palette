@@ -88,7 +88,6 @@ export default function ControlUI({ action, setAction, strokeColor, setStrokeCol
                             )}
                         >
                             <option value={ACTIONS.PENCIL}>Pencil</option>
-                            <option value={ACTIONS.LINE}>Line</option>
                             <option value={ACTIONS.RECTANGLE}>Rectangle</option>
                             <option value={ACTIONS.CIRCLE}>Circle</option>
 
