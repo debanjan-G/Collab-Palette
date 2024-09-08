@@ -9,7 +9,6 @@ function App() {
         <h1 className="text-5xl font-bold text-center">Collab_Palette</h1>
         <p className="text-center text-xl">A Real-Time Collaborative Whiteboard</p>
       </div>
-
       <Forms />
     </div >
   );

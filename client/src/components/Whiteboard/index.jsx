@@ -1,15 +1,28 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Layer, Rect, Circle, Stage, Text, Line } from 'react-konva';
 import { ACTIONS } from '../../constants';
+import { useLocation } from 'react-router-dom';
 
 
 const Whiteboard = ({ tool, setTool, stageRef, action, circles, setCircles, rectangles, setRectangles, lines, setLines, uuid, currentShapeID, isPainting, strokeColor, fillColor }) => {
 
+    const location = useLocation();
+    const socket = location.state;
+    console.log("SOCKET = ", socket);
+
+
     const shapeRefs = useRef({})
     const [forceUpdate, setForceUpdate] = useState(0)
+
+    useEffect(() => {
+
+        const canvasImage = stageRef.current.toDataURL();
+        socket.emit("whiteboardData", canvasImage)
+
+    }, [])
 
     const handlePointerDown = () => {
 

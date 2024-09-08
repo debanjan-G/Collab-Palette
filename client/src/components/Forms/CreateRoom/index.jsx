@@ -42,7 +42,7 @@ const CreateRoomForm = ({ socket, setUserData }) => {
 
         socket.emit("userJoined", data)
 
-        navigate(`/${roomCode}/whiteboard`)
+        navigate(`/${roomCode}/whiteboard`, { state: socket })
     }
 
     return (
