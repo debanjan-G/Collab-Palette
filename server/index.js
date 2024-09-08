@@ -17,10 +17,15 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("User Connected!");
+  socket.on("userJoined", (data) => {
+    // console.log("DATA = ", data);
+    const { roomID, userID, name, host, presenter } = data;
+    socket.join(roomID);
+    socket.emit("userIsJoined", { success: true });
+  });
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 server.listen(port, () => {
   console.log(`Server running on Port ${port}`);
