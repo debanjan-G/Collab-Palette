@@ -1,10 +1,11 @@
+/* eslint-disable react/prop-types */
 
 import Forms from '../../components/Forms'
 
-const HomePage = () => {
+const HomePage = ({ socket, userData, setUserData }) => {
     return (
         <div>
-            <Forms />
+            <Forms socket={socket} userData={userData} setUserData={setUserData} />
         </div>
     )
 }
