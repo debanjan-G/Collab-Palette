@@ -33,11 +33,10 @@ io.on("connection", (socket) => {
       socket.emit("userIsJoined", { success: true });
 
       // Emit whiteboard data only after joining the room
-      socket.broadcast.to(roomID).emit("whiteboardDataResponse", {
-        updatedImage: imageURL,
-      });
+      // socket.broadcast.to(roomID).emit("whiteboardDataResponse", {
+      //   updatedImage: imageURL,
+      // });
     });
-
   });
 
   // When whiteboard data is updated
@@ -49,10 +48,10 @@ io.on("connection", (socket) => {
 
     console.log("USER ROOM = ", userRoom);
     if (userRoom) {
-      socket.broadcast.to(userRoom).emit("whiteboardDataResponse", {
+      // Emit the whiteboard data to all clients in the room, including the sender
+      io.emit("whiteboardDataResponse", {
         updatedImage: stageImage,
       });
-      console.log("RESPONSE SENT successfully!");
     }
   });
 });
