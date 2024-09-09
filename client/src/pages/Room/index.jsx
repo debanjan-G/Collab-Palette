@@ -27,6 +27,7 @@ const RoomPage = ({ userData, socket }) => {
   const [rectangles, setRectangles] = useState([])
   const [circles, setCircles] = useState([])
   const [lines, setLines] = useState([])
+  const [shapes, setShapes] = useState([]);
 
   console.log("USER -> ", userData);
 
@@ -48,6 +49,7 @@ const RoomPage = ({ userData, socket }) => {
         setCircles={setCircles}
         setLines={setLines}
         setTool={setTool}
+        setShapes={setShapes}
       />
 
       <Whiteboard
@@ -67,6 +69,8 @@ const RoomPage = ({ userData, socket }) => {
         strokeColor={strokeColor}
         fillColor={fillColor}
         tool={tool}
+        setShapes={setShapes}
+        shapes={shapes}
       />
 
     </div>

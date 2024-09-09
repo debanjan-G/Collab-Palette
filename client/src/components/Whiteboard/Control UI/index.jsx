@@ -10,7 +10,7 @@ import { MdBorderColor } from "react-icons/md";
 import { IoIosDownload } from "react-icons/io";
 import { CiEraser } from "react-icons/ci";
 
-export default function ControlUI({ action, setAction, strokeColor, setStrokeColor, fillColor, setFillColor, stageRef, setRectangles, setCircles, setLines, setTool }) {
+export default function ControlUI({ setShapes, action, setAction, strokeColor, setStrokeColor, fillColor, setFillColor, stageRef, setRectangles, setCircles, setLines, setTool }) {
 
 
 
@@ -40,10 +40,20 @@ export default function ControlUI({ action, setAction, strokeColor, setStrokeCol
     }
 
     const handleClearCanvas = () => {
-        setRectangles([])
-        setCircles([])
-        setLines([])
-    }
+        console.log("CLEARING CANVAS...");
+
+        setCircles([]);
+        setRectangles([]);
+        setLines([]);
+        setShapes([]);
+
+        const stage = stageRef.current;
+        const layer = stage.getLayers()[0]; // Assuming the shapes are on the first layer
+
+        // Remove all children (shapes) from the layer
+        layer.destroyChildren();
+        layer.draw(); // Redraw the layer to reflect the change
+    };
 
     const setToolToEraser = () => {
         setTool("eraser")

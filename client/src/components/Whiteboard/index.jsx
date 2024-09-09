@@ -1,239 +1,171 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-
 import { useEffect, useRef, useState } from 'react';
-import { Layer, Rect, Circle, Stage, Text, Line, Image } from 'react-konva';
+import { Layer, Rect, Circle, Stage, Line, Image } from 'react-konva';
 import { ACTIONS } from '../../constants';
 
+const Whiteboard = ({ shapes, setShapes, socket, tool, stageRef, action, uuid, isPainting, strokeColor, fillColor }) => {
+    const [image, setImage] = useState(null);
 
-const Whiteboard = ({ socket, tool, stageRef, action, circles, setCircles, rectangles, setRectangles, lines, setLines, uuid, currentShapeID, isPainting, strokeColor, fillColor }) => {
-
-    const shapeRefs = useRef({})
-    const [forceUpdate, setForceUpdate] = useState(0)
-
-
-    const [image, setImage] = useState(null)
+    const shapeRefs = useRef({});
 
     useEffect(() => {
-
         console.log("INSIDE useEffect!");
-        if (!socket) return; // Check if socket is defined
-
+        if (!socket) return;
 
         const handleWhiteboardDataResponse = (data) => {
-            console.log("INSIDE CLIENT EVENT LISTENER!");
-            // console.log("Data from server: ", data);
-            const img = new window.Image(); // Create a new image element
-            img.src = data.updatedImage; // Set the DataURL received from the server
+            const img = new window.Image();
+            img.src = data.updatedImage;
             img.onload = () => {
-                setImage(img); // When the image is loaded, set it to state
-            }
-        }
+                setImage(img);
+            };
+        };
 
-        // Set up the socket listener
         socket.on("whiteboardDataResponse", handleWhiteboardDataResponse);
 
-        // Cleanup function to remove listener on unmount
         return () => {
             socket.off("whiteboardDataResponse", handleWhiteboardDataResponse);
         };
-
-    }, [])
-
-
+    }, [socket]);
 
     const handlePointerDown = () => {
-
         const stage = stageRef.current;
-        const { x, y } = stage.getPointerPosition()
-
+        const { x, y } = stage.getPointerPosition();
         const id = uuid();
-        currentShapeID.current = id;
-        isPainting.current = true;
+        const newShape = {
+            id,
+            type: action,
+            x,
+            y,
+            strokeColor,
+            fillColor,
+            order: shapes.length + 1, // Add an order to keep track of draw order
+        };
 
         switch (action) {
             case ACTIONS.RECTANGLE:
-                setRectangles((rectangles) => [
-                    ...rectangles,
-                    {
-                        id,
-                        x,
-                        y,
-                        height: 20,
-                        width: 20,
-                        fillColor,
-                        strokeColor
-                    },
-                ]);
+                newShape.width = 20;
+                newShape.height = 20;
                 break;
-
             case ACTIONS.CIRCLE:
-                setCircles((circles) => [
-                    ...circles,
-                    {
-                        id,
-                        x,
-                        y,
-                        radius: 10,
-                        fillColor,
-                        strokeColor
-                    }
-                ])
+                newShape.radius = 10;
                 break;
-
             case ACTIONS.PENCIL:
-                setLines([...lines,
-                {
-                    id,
-                    tool,
-                    strokeColor,
-                    points: [x, y]
-                }]);
+                newShape.points = [x, y];
                 break;
-
             default:
                 break;
         }
-    }
+
+        setShapes([...shapes, newShape]);
+        isPainting.current = true;
+    };
+
     const handlePointerMove = () => {
         if (!isPainting.current) return;
-
         const stage = stageRef.current;
-        const { x, y } = stage.getPointerPosition()
-        const lastLine = lines[lines.length - 1];
+        const { x, y } = stage.getPointerPosition();
 
-        // const stageImage = stageRef.current.toDataURL();
-        // socket.emit("whiteboardData", stageImage)
+        setShapes(shapes.map(shape => {
+            if (shape.id === shapes[shapes.length - 1]?.id) {
+                switch (shape.type) {
+                    case ACTIONS.RECTANGLE:
+                        return { ...shape, width: x - shape.x, height: y - shape.y };
+                    case ACTIONS.CIRCLE:
+                        return { ...shape, radius: Math.sqrt((y - shape.y) ** 2 + (x - shape.x) ** 2) };
+                    case ACTIONS.PENCIL:
+                        shape.points = shape.points.concat([x, y]);
+                        return { ...shape };
+                    default:
+                        return shape;
+                }
+            }
+            return shape;
+        }));
+    };
 
-        switch (action) {
-            case ACTIONS.RECTANGLE:
-                setRectangles((rectangles) =>
-                    rectangles.map((rectangle) => {
-                        if (rectangle.id === currentShapeID.current) {
-                            return {
-                                ...rectangle,
-                                width: x - rectangle.x,
-                                height: y - rectangle.y,
-                            };
-                        }
-                        return rectangle;
-                    })
-                );
-                break;
-
-            case ACTIONS.CIRCLE:
-                setCircles((circles) =>
-                    circles.map((circle) => {
-                        if (circle.id === currentShapeID.current) {
-                            return {
-                                ...circle,
-                                radius: Math.sqrt((y - circle.y) ** 2 + (x - circle.x) ** 2)
-                            };
-                        }
-                        return circle;
-                    }))
-                break;
-
-            case ACTIONS.PENCIL:
-
-                // add point
-                lastLine.points = lastLine.points.concat([x, y]);
-                // replace last
-                lines.splice(lines.length - 1, 1, lastLine);
-                setLines(lines.concat());
-                break;
-
-            default:
-                break;
-        }
-    }
     const handlePointerUp = () => {
         isPainting.current = false;
-
-        // Emit whiteboard data on pointer up to capture the final state
-        console.log("EMITTING EVENT WHITEBOARD DATA");
-
         const stageImage = stageRef.current.toDataURL();
         socket.emit("whiteboardData", stageImage);
-    }
+    };
 
     const handleShapeClick = (id) => {
-        // Get the ref of the shape and move it to the top
         if (shapeRefs.current[id]) {
             shapeRefs.current[id].moveToTop();
-            shapeRefs.current[id].getLayer().batchDraw(); // Redraw the layer to apply changes
+            shapeRefs.current[id].getLayer().batchDraw();
         }
-        setForceUpdate((prev) => prev + 1); // Force a re-render
     };
 
     return (
-        // Canvas
         <Stage
             ref={stageRef}
             width={1200}
             height={400}
-            className=' mx-auto bg-white shadow-md border border-slate-400 rounded-md'
+            className='mx-auto bg-white shadow-md border border-slate-400 rounded-md'
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
         >
             <Layer>
-
-                {image &&
+                {image && (
                     <Image
-                        image={image} // The image to be drawn
+                        image={image}
                         x={0}
                         y={0}
                         width={1200}
-                        height={400} // You can adjust width/height as necessary
-                    />
-                }
-
-                {rectangles.map((rectangle) =>
-                    <Rect
-                        ref={(node) => { shapeRefs.current[rectangle.id] = node; }} // Assign ref
-                        key={rectangle.id}
-                        height={rectangle.height}
-                        width={rectangle.width}
-                        x={rectangle.x}
-                        y={rectangle.y}
-                        fill={rectangle.fillColor}
-                        stroke={rectangle.strokeColor}
-                        onClick={() => handleShapeClick(rectangle.id)}
+                        height={400}
                     />
                 )}
 
-                {circles.map((circle) =>
-                    <Circle
-                        ref={(node) => { shapeRefs.current[circle.id] = node; }} // Assign ref
-                        key={circle.id}
-                        x={circle.x}
-                        y={circle.y}
-                        radius={circle.radius}
-                        fill={circle.fillColor}
-                        stroke={circle.strokeColor}
-                        onClick={() => handleShapeClick(circle.id)}
-                    />
-                )}
-
-                {lines.map((line) =>
-                    <Line
-                        key={line.id}
-                        stroke={line.strokeColor}
-                        points={line.points}
-                        strokeWidth={line.tool === 'eraser' ? 20 : 5}
-                        lineCap="round"
-                        lineJoin="round"
-                        globalCompositeOperation={
-                            line.tool === 'eraser' ? 'destination-out' : 'source-over'
-                        }
-
-                    />
-                )}
-
+                {shapes.sort((a, b) => a.order - b.order).map(shape => {
+                    switch (shape.type) {
+                        case ACTIONS.RECTANGLE:
+                            return (
+                                <Rect
+                                    ref={(node) => { shapeRefs.current[shape.id] = node; }}
+                                    key={shape.id}
+                                    x={shape.x}
+                                    y={shape.y}
+                                    width={shape.width}
+                                    height={shape.height}
+                                    fill={shape.fillColor}
+                                    stroke={shape.strokeColor}
+                                    onClick={() => handleShapeClick(shape.id)}
+                                />
+                            );
+                        case ACTIONS.CIRCLE:
+                            return (
+                                <Circle
+                                    ref={(node) => { shapeRefs.current[shape.id] = node; }}
+                                    key={shape.id}
+                                    x={shape.x}
+                                    y={shape.y}
+                                    radius={shape.radius}
+                                    fill={shape.fillColor}
+                                    stroke={shape.strokeColor}
+                                    onClick={() => handleShapeClick(shape.id)}
+                                />
+                            );
+                        case ACTIONS.PENCIL:
+                            return (
+                                <Line
+                                    key={shape.id}
+                                    stroke={shape.strokeColor}
+                                    points={shape.points}
+                                    strokeWidth={shape.tool === 'eraser' ? 20 : 5}
+                                    lineCap="round"
+                                    lineJoin="round"
+                                    globalCompositeOperation={
+                                        shape.tool === 'eraser' ? 'destination-out' : 'source-over'
+                                    }
+                                />
+                            );
+                        default:
+                            return null;
+                    }
+                })}
             </Layer>
         </Stage>
-
     );
 };
 

@@ -30,9 +30,9 @@ function App() {
       }
     });
 
-    // return () => {
-    //   socketInstance.disconnect(); // Cleanup socket on component unmount
-    // };
+    return () => {
+      socketInstance.disconnect(); // Cleanup socket on component unmount
+    };
   }, []);
 
   const router = createBrowserRouter(createRoutesFromElements(
