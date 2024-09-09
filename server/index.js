@@ -17,28 +17,27 @@ app.get("/", (req, res) => {
 });
 
 let imageURL, userRoom;
+
 io.on("connection", (socket) => {
   // When a new user joins the room
   socket.on("userJoined", (data) => {
     console.log("userJoined Server Event Handler Fired!!!");
 
-    const { roomID, userID, name, host, presenter } = data;
-    console.log("ROOM ID = ", roomID);
-
+    const { roomID } = data;
     // Store the roomID in the socket object
     userRoom = roomID;
-    console.log("userRoom = ", userRoom);
 
     // Socket joins the specified room
-    socket.join(roomID);
+    socket.join(roomID, () => {
+      // Notify the user that they have successfully joined
+      socket.emit("userIsJoined", { success: true });
 
-    // Notify the user that they have successfully joined
-    socket.emit("userIsJoined", { success: true });
-
-    // Send the latest whiteboard image to the newly joined user
-    socket.emit("whiteboardDataResponse", {
-      updatedImage: imageURL,
+      // Emit whiteboard data only after joining the room
+      socket.broadcast.to(roomID).emit("whiteboardDataResponse", {
+        updatedImage: imageURL,
+      });
     });
+
   });
 
   // When whiteboard data is updated
@@ -48,8 +47,7 @@ io.on("connection", (socket) => {
     // Store the latest whiteboard image globally
     imageURL = stageImage;
 
-    console.log("ROOM ID", userRoom);
-
+    console.log("USER ROOM = ", userRoom);
     if (userRoom) {
       socket.broadcast.to(userRoom).emit("whiteboardDataResponse", {
         updatedImage: stageImage,
