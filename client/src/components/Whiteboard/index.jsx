@@ -2,18 +2,44 @@
 /* eslint-disable no-unused-vars */
 
 import { useEffect, useRef, useState } from 'react';
-import { Layer, Rect, Circle, Stage, Text, Line } from 'react-konva';
+import { Layer, Rect, Circle, Stage, Text, Line, Image } from 'react-konva';
 import { ACTIONS } from '../../constants';
-import { useLocation } from 'react-router-dom';
 
 
-const Whiteboard = ({ tool, setTool, stageRef, action, circles, setCircles, rectangles, setRectangles, lines, setLines, uuid, currentShapeID, isPainting, strokeColor, fillColor }) => {
-
-    const location = useLocation();
-
+const Whiteboard = ({ socket, tool, stageRef, action, circles, setCircles, rectangles, setRectangles, lines, setLines, uuid, currentShapeID, isPainting, strokeColor, fillColor }) => {
 
     const shapeRefs = useRef({})
     const [forceUpdate, setForceUpdate] = useState(0)
+
+
+    const [image, setImage] = useState(null)
+
+    useEffect(() => {
+
+        console.log("INSIDE useEffect!");
+        if (!socket) return; // Check if socket is defined
+
+
+        const handleWhiteboardDataResponse = (data) => {
+            console.log("INSIDE CLIENT EVENT LISTENER!");
+            // console.log("Data from server: ", data);
+            const img = new window.Image(); // Create a new image element
+            img.src = data.updatedImage; // Set the DataURL received from the server
+            img.onload = () => {
+                setImage(img); // When the image is loaded, set it to state
+            }
+        }
+
+        // Set up the socket listener
+        socket.on("whiteboardDataResponse", handleWhiteboardDataResponse);
+
+        // Cleanup function to remove listener on unmount
+        return () => {
+            socket.off("whiteboardDataResponse", handleWhiteboardDataResponse);
+        };
+
+    }, [])
+
 
 
     const handlePointerDown = () => {
@@ -76,6 +102,9 @@ const Whiteboard = ({ tool, setTool, stageRef, action, circles, setCircles, rect
         const { x, y } = stage.getPointerPosition()
         const lastLine = lines[lines.length - 1];
 
+        // const stageImage = stageRef.current.toDataURL();
+        // socket.emit("whiteboardData", stageImage)
+
         switch (action) {
             case ACTIONS.RECTANGLE:
                 setRectangles((rectangles) =>
@@ -120,6 +149,12 @@ const Whiteboard = ({ tool, setTool, stageRef, action, circles, setCircles, rect
     }
     const handlePointerUp = () => {
         isPainting.current = false;
+
+        // Emit whiteboard data on pointer up to capture the final state
+        console.log("EMITTING EVENT WHITEBOARD DATA");
+
+        const stageImage = stageRef.current.toDataURL();
+        socket.emit("whiteboardData", stageImage);
     }
 
     const handleShapeClick = (id) => {
@@ -130,7 +165,6 @@ const Whiteboard = ({ tool, setTool, stageRef, action, circles, setCircles, rect
         }
         setForceUpdate((prev) => prev + 1); // Force a re-render
     };
-
 
     return (
         // Canvas
@@ -144,6 +178,16 @@ const Whiteboard = ({ tool, setTool, stageRef, action, circles, setCircles, rect
             onPointerUp={handlePointerUp}
         >
             <Layer>
+
+                {image &&
+                    <Image
+                        image={image} // The image to be drawn
+                        x={0}
+                        y={0}
+                        width={1200}
+                        height={400} // You can adjust width/height as necessary
+                    />
+                }
 
                 {rectangles.map((rectangle) =>
                     <Rect

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useRef, useState } from 'react';
 import Whiteboard from '../../components/Whiteboard'
 import { useParams } from 'react-router-dom'
@@ -5,7 +6,7 @@ import ControlUI from '../../components/Whiteboard/Control UI';
 import { ACTIONS } from '../../constants';
 import { v4 as uuidv4 } from "uuid"
 
-const RoomPage = () => {
+const RoomPage = ({ userData, socket }) => {
   const { roomID } = useParams();
   const stageRef = useRef(null);
 
@@ -26,6 +27,8 @@ const RoomPage = () => {
   const [rectangles, setRectangles] = useState([])
   const [circles, setCircles] = useState([])
   const [lines, setLines] = useState([])
+
+  console.log("USER -> ", userData);
 
 
   return (
@@ -48,6 +51,7 @@ const RoomPage = () => {
       />
 
       <Whiteboard
+        socket={socket}
         action={action}
         stageRef={stageRef}
         setCircles={setCircles}

@@ -13,21 +13,16 @@ import { CiEraser } from "react-icons/ci";
 export default function ControlUI({ action, setAction, strokeColor, setStrokeColor, fillColor, setFillColor, stageRef, setRectangles, setCircles, setLines, setTool }) {
 
 
-    console.log("Stroke COLOR = ", strokeColor);
-    console.log("Fill COLOR = ", fillColor);
 
     const handleFillColorChange = (e) => {
-        console.log("CHANGING COLOR TO ", e.target.value);
         setFillColor(e.target.value)
     }
     const handleStrokeColorChange = (e) => {
-        console.log("CHANGING COLOR TO ", e.target.value);
         setStrokeColor(e.target.value)
     }
 
 
     const handleToolChange = (e) => {
-        console.log("CHANGING Tool TO ", e.target.value);
         if (e.target.value === 'pencil') {
             setTool('pencil')
         }

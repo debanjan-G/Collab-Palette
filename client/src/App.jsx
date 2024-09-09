@@ -7,6 +7,7 @@ import { io } from "socket.io-client";
 function App() {
 
   const [userData, setUserData] = useState("")
+  const [socket, setSocket] = useState(null)
 
 
   const server = 'http://localhost:5000'
@@ -17,18 +18,22 @@ function App() {
     transports: ['websocket']
   }
 
-  const socket = io(server, connectionOptions)
-
   useEffect(() => {
-    socket.on("userIsJoined", (data) => {
+    const socketInstance = io(server, connectionOptions);
+    setSocket(socketInstance);
+
+    socketInstance.on("userIsJoined", (data) => {
       if (data.success) {
         console.log("User joined successfully.");
       } else {
-        console.log("User coudln't join the room!");
+        console.log("User couldn't join the room!");
       }
-    })
-  }, []
-  )
+    });
+
+    // return () => {
+    //   socketInstance.disconnect(); // Cleanup socket on component unmount
+    // };
+  }, []);
 
   const router = createBrowserRouter(createRoutesFromElements(
     <Route path='/' >
